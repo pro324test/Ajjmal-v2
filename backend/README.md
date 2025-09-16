@@ -37,11 +37,20 @@ This is the backend API for the Ajjmal-v2 project, built with:
 - RESTful API with CRUD operations
 - Database integration with Prisma ORM
 - User management endpoints
+- **Authentication & Authorization** - JWT-based authentication with role-based access control
+- **Password Security** - Bcrypt hashing for secure password storage
+- **Multi-role Support** - Users can have multiple roles (CUSTOMER, VENDOR, DELIVERY_PERSON, SYSTEM_STAFF)
 - TypeScript support
 - Hot reload in development
 - Built-in validation and error handling
 
 ## API Endpoints
+
+### Authentication
+- `POST /auth/login` - Login with email/phone and password
+- `POST /auth/register` - Register a new user
+- `POST /auth/validate-credential` - Validate user credentials (for NextAuth.js integration)
+- `GET /auth/profile` - Get authenticated user profile (requires JWT token)
 
 ### Users
 - `GET /users` - Get all users
@@ -55,9 +64,32 @@ This is the backend API for the Ajjmal-v2 project, built with:
 {
   "id": 1,
   "email": "user@example.com",
-  "name": "John Doe",
+  "phoneNumber": "+1234567890",
+  "fullName": "John Doe",
+  "roles": ["CUSTOMER"],
   "createdAt": "2025-09-16T15:41:24.353Z",
   "updatedAt": "2025-09-16T15:41:24.353Z"
+}
+```
+
+### Example Authentication Request/Response
+```json
+// POST /auth/login
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+
+// Response
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1,
+    "email": "user@example.com",
+    "phoneNumber": "+1234567890",
+    "fullName": "John Doe",
+    "roles": ["CUSTOMER"]
+  }
 }
 ```
 
@@ -65,6 +97,18 @@ This is the backend API for the Ajjmal-v2 project, built with:
 
 ```bash
 $ npm install
+```
+
+## Environment Setup
+
+Create a `.env` file in the backend directory:
+
+```env
+# Database URL for development (SQLite)
+DATABASE_URL="file:./dev.db"
+
+# JWT Secret (change in production)
+JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
 ```
 
 ## Database setup

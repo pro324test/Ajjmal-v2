@@ -1,11 +1,10 @@
 // --- PRISMA CONFIGURATION ---
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions", "fullTextSearchPostgres"]
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider  = "sqlite"
   url       = env("DATABASE_URL")
 }
 
@@ -46,8 +45,8 @@ model UserRoleRequest {
   requestedRole     UserRole
   status            String    @default("PENDING") // PENDING, APPROVED, REJECTED
   submissionData    Json      // Form data submitted with the request
-  adminNotes        String?   @db.Text
-  rejectionReason   String?   @db.Text @map("rejection_reason")
+  adminNotes        String?
+  rejectionReason   String? @map("rejection_reason")
   
   submittedAt       DateTime  @default(now()) @map("submitted_at")
   processedAt       DateTime? @map("processed_at")
@@ -111,8 +110,8 @@ model GeoZone {
   name          String    @unique // الاسم العربي
   nameEn        String // الاسم الإنجليزي
   code          String?   @unique
-  description   String?   @db.Text // الوصف العربي
-  descriptionEn String?   @map("description_en") @db.Text // الوصف بالإنجليزية
+  description   String?    // الوصف العربي
+  descriptionEn String?   @map("description_en")  // الوصف بالإنجليزية
   isActive      Boolean   @default(true) @map("is_active")
   sortOrder     Int       @default(0) @map("sort_order")
   createdAt     DateTime  @default(now()) @map("created_at")
@@ -134,8 +133,8 @@ model GeoCity {
   name          String // الاسم العربي
   nameEn        String    @map("name_en") // الاسم الإنجليزي
   code          String?
-  description   String?   @db.Text // الوصف العربي
-  descriptionEn String?   @map("description_en") @db.Text // الوصف بالإنجليزية
+  description   String?    // الوصف العربي
+  descriptionEn String?   @map("description_en")  // الوصف بالإنجليزية
   isActive      Boolean   @default(true) @map("is_active")
   sortOrder     Int       @default(0) @map("sort_order")
   createdAt     DateTime  @default(now()) @map("created_at")
@@ -160,8 +159,8 @@ model GeoRegion {
   name          String // الاسم العربي
   nameEn        String    @map("name_en") // الاسم الإنجليزي
   code          String?
-  description   String?   @db.Text // الوصف العربي
-  descriptionEn String?   @map("description_en") @db.Text // الوصف بالإنجليزية
+  description   String?    // الوصف العربي
+  descriptionEn String?   @map("description_en")  // الوصف بالإنجليزية
   isActive      Boolean   @default(true) @map("is_active")
   sortOrder     Int       @default(0) @map("sort_order")
   createdAt     DateTime  @default(now()) @map("created_at")
@@ -233,7 +232,7 @@ model UserRoleHistoryItem {
   action            String   // "ASSIGNED", "REVOKED", "PRIMARY_CHANGED"
   changedAt         DateTime @default(now()) @map("changed_at")
   changedById       Int      @map("changed_by_id")
-  reason            String?  @db.Text
+  reason            String?  
   profileId         Int?     @map("profile_id") // ID of the related profile
 
   user      User @relation("UserRoleHistory", fields: [userId], references: [id], onDelete: Cascade)
@@ -277,10 +276,10 @@ model UserNotification {
   userId    Int       @map("user_id")
   title     String
   titleEn   String    @map("title_en") // عنوان الإشعار بالإنجليزية
-  message   String    @db.Text
-  messageEn String    @map("message_en") @db.Text // رسالة الإشعار بالإنجليزية  
+  message   String    
+  messageEn String    @map("message_en")  // رسالة الإشعار بالإنجليزية  
   isRead    Boolean   @default(false) @map("is_read")
-  type      String    @default("INFO") // INFO, WARNING, ERROR, SUCCESS  link      String?   @db.Text // Optional link to relevant page
+  type      String    @default("INFO") // INFO, WARNING, ERROR, SUCCESS  link      String?    // Optional link to relevant page
   createdAt DateTime  @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -311,8 +310,8 @@ model SystemStaffRole {
   id            Int       @id @default(autoincrement())
   roleName      String    @unique @map("role_name") // اسم الدور بالعربية
   roleNameEn    String    @map("role_name_en") // اسم الدور بالإنجليزية
-  description   String?   @db.Text // الوصف بالعربية
-  descriptionEn String?   @map("description_en") @db.Text // الوصف بالإنجليزية  createdAt     DateTime  @default(now()) @map("created_at")
+  description   String?    // الوصف بالعربية
+  descriptionEn String?   @map("description_en")  // الوصف بالإنجليزية  createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
   permissions   SystemStaffRolePermission[]
@@ -326,8 +325,8 @@ model Permission {
   permissionKey String    @unique @map("permission_key")
   category      String // Grouping for UI
   categoryEn    String    @map("category_en") // English category name
-  description   String?   @db.Text // الوصف بالعربية
-  descriptionEn String?   @map("description_en") @db.Text // الوصف بالإنجليزية  createdAt     DateTime  @default(now()) @map("created_at")
+  description   String?    // الوصف بالعربية
+  descriptionEn String?   @map("description_en")  // الوصف بالإنجليزية  createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
   rolePermissions SystemStaffRolePermission[]
@@ -415,7 +414,7 @@ model CustomerAddress {
   cityId          Int?      @map("city_id")
   regionId        Int?      @map("region_id")
   postalCode      String?   @map("postal_code")
-  notes           String?   @db.Text
+  notes           String?   
   
   isDefault       Boolean   @default(false) @map("is_default")
   createdAt       DateTime  @default(now()) @map("created_at")
@@ -460,8 +459,8 @@ model VendorProfile {
   storeName       String    @map("store_name") // Name in Arabic
   storeNameEn     String?   @map("store_name_en") // Name in English
   slug            String    @unique
-  description     String?   @db.Text
-  descriptionEn   String?   @map("description_en") @db.Text
+  description     String?   
+  descriptionEn   String?   @map("description_en") 
   
   // Store media
   logo            String?
@@ -477,11 +476,11 @@ model VendorProfile {
   zoneId          Int?      @map("zone_id")
   cityId          Int?      @map("city_id")
   regionId        Int?      @map("region_id")
-  address         String?   @db.Text
+  address         String?   
   
   // Store settings
-  commissionRate  Decimal   @default(10) @map("commission_rate") @db.Decimal(5, 2)
-  minPayout       Decimal   @default(100) @map("min_payout") @db.Decimal(15, 2)
+  commissionRate  Decimal   @default(10) @map("commission_rate") 
+  minPayout       Decimal   @default(100) @map("min_payout") 
   
   // Status
   isVerified      Boolean   @default(false) @map("is_verified")
@@ -509,10 +508,10 @@ model VendorProfile {
 // Vendor balance tracking
 model VendorBalance {
   vendorId          Int       @id @map("vendor_id") // Primary key is vendor ID
-  availableBalance  Decimal   @default(0) @map("available_balance") @db.Decimal(15, 2)
-  pendingBalance    Decimal   @default(0) @map("pending_balance") @db.Decimal(15, 2)
-  totalSales        Decimal   @default(0) @map("total_sales") @db.Decimal(15, 2)
-  totalCommission   Decimal   @default(0) @map("total_commission") @db.Decimal(15, 2)
+  availableBalance  Decimal   @default(0) @map("available_balance") 
+  pendingBalance    Decimal   @default(0) @map("pending_balance") 
+  totalSales        Decimal   @default(0) @map("total_sales") 
+  totalCommission   Decimal   @default(0) @map("total_commission") 
   updatedAt         DateTime  @updatedAt @map("updated_at")
   
   // Relations
@@ -530,14 +529,14 @@ model VendorTransaction {
   
   // Transaction details
   type            String    // SALE, PAYOUT, COMMISSION, REFUND, ADJUSTMENT
-  amount          Decimal   @db.Decimal(15, 2)
-  fee             Decimal   @default(0) @db.Decimal(15, 2)
-  netAmount       Decimal   @map("net_amount") @db.Decimal(15, 2)
+  amount          Decimal   
+  fee             Decimal   @default(0) 
+  netAmount       Decimal   @map("net_amount") 
   
   // Reference info
   status          String    @default("COMPLETED")
   reference       String?   // Order ID, Payout ID, etc.
-  description     String?   @db.Text
+  description     String?   
   
   // Timestamps
   createdAt       DateTime  @default(now()) @map("created_at")
@@ -559,15 +558,15 @@ model VendorPayout {
   vendorId        Int       @map("vendor_id")
   
   // Payout details
-  amount          Decimal   @db.Decimal(15, 2)
-  fee             Decimal   @default(0) @db.Decimal(15, 2)
-  netAmount       Decimal   @map("net_amount") @db.Decimal(15, 2)
+  amount          Decimal   
+  fee             Decimal   @default(0) 
+  netAmount       Decimal   @map("net_amount") 
   
   // Payout info
   status          String    @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
   paymentMethod   String    @map("payment_method") // BANK_TRANSFER, CASH, etc.
   paymentDetails  Json?     @map("payment_details")
-  notes           String?   @db.Text
+  notes           String?   
   
   // Processing info
   processedById   Int?      @map("processed_by_id")
@@ -609,7 +608,7 @@ model DeliveryPersonProfile {
   verificationDate   DateTime? @map("verification_date")
   
   // Performance metrics
-  rating             Decimal?  @db.Decimal(3, 2)
+  rating             Decimal?  
   completedDeliveries Int      @default(0) @map("completed_deliveries")
     // Timestamps
   joinedAt           DateTime  @default(now()) @map("joined_at")
@@ -646,15 +645,15 @@ model Delivery {
   // Contact and instructions
   recipientName      String         @map("recipient_name")
   recipientPhone     String         @map("recipient_phone")
-  deliveryNotes      String?        @map("delivery_notes") @db.Text
+  deliveryNotes      String?        @map("delivery_notes") 
   
   // Rating and feedback
   rating             Int?           // 1-5 stars
-  feedback           String?        @db.Text
+  feedback           String?        
   
   // Financial details
-  deliveryFee        Decimal        @default(0) @map("delivery_fee") @db.Decimal(10, 2)
-  cashOnDelivery     Decimal        @default(0) @map("cash_on_delivery") @db.Decimal(15, 2)
+  deliveryFee        Decimal        @default(0) @map("delivery_fee") 
+  cashOnDelivery     Decimal        @default(0) @map("cash_on_delivery") 
     createdAt          DateTime       @default(now()) @map("created_at")
   updatedAt          DateTime       @updatedAt @map("updated_at")
   
@@ -678,8 +677,8 @@ model Category {
   name          String    // Name in Arabic
   nameEn        String    @map("name_en") // Name in English
   slug          String    @unique
-  description   String?   @db.Text // Description in Arabic
-  descriptionEn String?   @map("description_en") @db.Text // Description in English
+  description   String?    // Description in Arabic
+  descriptionEn String?   @map("description_en")  // Description in English
   
   // Display and organization
   imageUrl      String?   @map("image_url")
@@ -712,8 +711,8 @@ model Subcategory {
   nameEn        String    @map("name_en") // Name in English
   slug          String    @unique
   categoryId    Int       @map("category_id")
-  description   String?   @db.Text // Description in Arabic
-  descriptionEn String?   @map("description_en") @db.Text // Description in English
+  description   String?    // Description in Arabic
+  descriptionEn String?   @map("description_en")  // Description in English
   
   // Display and organization
   imageUrl      String?   @map("image_url")
@@ -745,8 +744,8 @@ model Brand {
   nameEn           String    @map("name_en") // Name in English
   slug             String    @unique
   logoUrl          String?   @map("logo_url")
-  description      String?   @db.Text // Description in Arabic
-  descriptionEn    String?   @map("description_en") @db.Text // Description in English
+  description      String?    // Description in Arabic
+  descriptionEn    String?   @map("description_en")  // Description in English
   websiteUrl       String?   @map("website_url")
   
   // Status
@@ -784,15 +783,15 @@ model Product {
   barcode         String?
   
   // Description
-  description     String?   @db.Text // Description in Arabic
-  descriptionEn   String?   @map("description_en") @db.Text // Description in English
-  shortDesc       String?   @map("short_desc") @db.Text // Short description for listings
-  shortDescEn     String?   @map("short_desc_en") @db.Text
+  description     String?    // Description in Arabic
+  descriptionEn   String?   @map("description_en")  // Description in English
+  shortDesc       String?   @map("short_desc")  // Short description for listings
+  shortDescEn     String?   @map("short_desc_en") 
   
   // Pricing
-  price           Decimal   @db.Decimal(15, 2) // Regular price
-  comparePrice    Decimal?  @map("compare_price") @db.Decimal(15, 2) // Original/crossed-out price
-  costPrice       Decimal   @map("cost_price") @db.Decimal(15, 2) // Cost to vendor
+  price           Decimal    // Regular price
+  comparePrice    Decimal?  @map("compare_price")  // Original/crossed-out price
+  costPrice       Decimal   @map("cost_price")  // Cost to vendor
   
   // Inventory
   stockQuantity   Int       @default(0) @map("stock_quantity")
@@ -805,7 +804,7 @@ model Product {
   isFeatured      Boolean   @default(false) @map("is_featured")
     // SEO
   metaTitle       String?   @map("meta_title")
-  metaDescription String?   @map("meta_description") @db.Text
+  metaDescription String?   @map("meta_description") 
   metaKeywords    String?   @map("meta_keywords")
   
   // Timestamps
@@ -884,8 +883,8 @@ model ProductVariation {
   id              Int       @id @default(autoincrement())
   productId       Int       @map("product_id")
   sku             String?
-  price           Decimal   @db.Decimal(15, 2)
-  comparePrice    Decimal?  @map("compare_price") @db.Decimal(15, 2)
+  price           Decimal   
+  comparePrice    Decimal?  @map("compare_price") 
   stockQuantity   Int       @default(0) @map("stock_quantity")
   isActive        Boolean   @default(true) @map("is_active")
   createdAt       DateTime  @default(now()) @map("created_at")
@@ -933,7 +932,7 @@ model ProductReview {
   
   rating            Int       @default(5) // 1-5 stars
   title             String?
-  comment           String?   @db.Text
+  comment           String?   
   
   isVerifiedPurchase Boolean  @default(false) @map("is_verified_purchase")
   status            String    @default("PENDING") // PENDING, APPROVED, REJECTED
@@ -1004,11 +1003,11 @@ model Order {
   vendorId          Int        @map("vendor_id")
   
   // Order amounts
-  subtotal          Decimal    @db.Decimal(15, 2)
-  shipping          Decimal    @default(0) @db.Decimal(15, 2)
-  tax               Decimal    @default(0) @db.Decimal(15, 2)
-  discount          Decimal    @default(0) @db.Decimal(15, 2)
-  total             Decimal    @db.Decimal(15, 2)
+  subtotal          Decimal    
+  shipping          Decimal    @default(0) 
+  tax               Decimal    @default(0) 
+  discount          Decimal    @default(0) 
+  total             Decimal    
   
   // Coupon
   couponCode        String?    @map("coupon_code")
@@ -1024,8 +1023,8 @@ model Order {
   trackingNumber    String?    @map("tracking_number")
   
   // Notes
-  customerNotes     String?    @map("customer_notes") @db.Text
-  vendorNotes       String?    @map("vendor_notes") @db.Text
+  customerNotes     String?    @map("customer_notes") 
+  vendorNotes       String?    @map("vendor_notes") 
   
   // Timestamps
   placedAt          DateTime   @default(now()) @map("placed_at")
@@ -1063,9 +1062,9 @@ model OrderItem {
   // Item details
   name              String
   sku               String?
-  price             Decimal   @db.Decimal(15, 2)
+  price             Decimal   
   quantity          Int
-  subtotal          Decimal   @db.Decimal(15, 2)
+  subtotal          Decimal   
   
   createdAt         DateTime  @default(now()) @map("created_at")
   updatedAt         DateTime  @updatedAt @map("updated_at")
@@ -1085,7 +1084,7 @@ model OrderStatusHistory {
   id          Int         @id @default(autoincrement())
   orderId     Int         @map("order_id")
   status      OrderStatus
-  note        String?     @db.Text
+  note        String?     
   createdById Int         @map("created_by_id")
   createdAt   DateTime    @default(now()) @map("created_at")
   
@@ -1139,10 +1138,10 @@ model AuditLog {
   oldValue    Json?    @map("old_value")
   newValue    Json?    @map("new_value")
   ipAddress   String?  @map("ip_address")
-  requestPath String?  @map("request_path") @db.Text
-  userAgent   String?  @map("user_agent") @db.Text
+  requestPath String?  @map("request_path") 
+  userAgent   String?  @map("user_agent") 
   status      String   @default("SUCCESS")
-  notes       String?  @db.Text
+  notes       String?  
   // No deletedAt - audit logs are immutable for security audit purposes
 
   user User? @relation("UserActions", fields: [userId], references: [id], onDelete: SetNull)
@@ -1157,12 +1156,12 @@ model AuditLog {
 
 // System settings table
 model SystemSetting {
-  key           String   @id @db.VarChar(100)
-  value         String   @db.Text
+  key           String   @id 
+  value         String   
   dataType      String   @map("data_type") // string, number, boolean, json
   isSecret      Boolean  @default(false) @map("is_secret")
-  description   String?  @db.Text // الوصف بالعربية
-  descriptionEn String?  @map("description_en") @db.Text // الوصف بالإنجليزية
+  description   String?   // الوصف بالعربية
+  descriptionEn String?  @map("description_en")  // الوصف بالإنجليزية
   updatedById   Int?     @map("updated_by_id")
   updatedAt     DateTime @updatedAt
   // No deletedAt - settings are critical and not deleted
