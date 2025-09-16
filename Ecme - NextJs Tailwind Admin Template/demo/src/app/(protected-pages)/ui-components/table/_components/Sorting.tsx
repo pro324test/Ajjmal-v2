@@ -131,11 +131,11 @@ const Sorting = () => {
                                                         .header,
                                                     header.getContext(),
                                                 )}
-                                                {
+                                                {header.column.getCanSort() && (
                                                     <Sorter
                                                         sort={header.column.getIsSorted()}
                                                     />
-                                                }
+                                                )}
                                             </div>
                                         )}
                                     </Th>
