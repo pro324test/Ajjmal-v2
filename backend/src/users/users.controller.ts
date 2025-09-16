@@ -27,8 +27,8 @@ export class UsersController {
 
   @Get()
   findAll(
-    @Query('page', ParseIntPipe) page?: number,
-    @Query('pageSize', ParseIntPipe) pageSize?: number,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
     @Query('search') search?: string,
     @Query('role') role?: string,
     @Query('status') status?: 'active' | 'inactive',
@@ -36,8 +36,8 @@ export class UsersController {
     @Query('order') order?: 'asc' | 'desc',
   ) {
     return this.usersService.findAll({
-      page,
-      pageSize,
+      page: page ? parseInt(page, 10) : undefined,
+      pageSize: pageSize ? parseInt(pageSize, 10) : undefined,
       search,
       role,
       status,
