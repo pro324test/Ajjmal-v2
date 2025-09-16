@@ -138,7 +138,7 @@ function DataTable<T>(props: DataTableProps<T>) {
 
     const { pageSize, pageIndex, total } = pagingData
 
-    const [sorting, setSorting] = useState<ColumnSort[] | null>(null)
+    const [sorting, setSorting] = useState<ColumnSort[]>([])
 
     const pageSizeOption = useMemo(
         () =>
@@ -150,11 +150,13 @@ function DataTable<T>(props: DataTableProps<T>) {
     )
 
     useEffect(() => {
-        if (Array.isArray(sorting)) {
+        if (Array.isArray(sorting) && sorting.length > 0) {
             const sortOrder =
                 sorting.length > 0 ? (sorting[0].desc ? 'desc' : 'asc') : ''
             const id = sorting.length > 0 ? sorting[0].id : ''
-            onSort?.({ order: sortOrder, key: id })
+            if (id) { // Only call onSort if there's a valid sort id
+                onSort?.({ order: sortOrder, key: id })
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sorting])
@@ -241,7 +243,7 @@ function DataTable<T>(props: DataTableProps<T>) {
             setSorting(sorter as ColumnSort[])
         },
         state: {
-            sorting: sorting as ColumnSort[],
+            sorting: sorting,
         },
     })
 

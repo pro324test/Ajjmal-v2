@@ -16,7 +16,11 @@ const useAppendQueryParams = () => {
         })
 
         const newQueryString = updatedParams.toString()
-        router.push(`${pathname}?${newQueryString}`)
+        const newUrl = `${pathname}?${newQueryString}`
+        
+        // Use router.push with refresh for proper server-side re-rendering
+        router.push(newUrl)
+        router.refresh()
     }
 
     return { onAppendQueryParams }
