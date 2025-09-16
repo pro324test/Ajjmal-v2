@@ -26,7 +26,7 @@ export class AuthService {
       },
     });
 
-    if (user && await bcrypt.compare(password, user.passwordHash)) {
+    if (user && (await bcrypt.compare(password, user.passwordHash))) {
       const { passwordHash, ...result } = user;
       return result;
     }
@@ -35,7 +35,7 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     const { email, phoneNumber, password } = loginDto;
-    
+
     let user;
     if (email) {
       user = await this.prisma.user.findUnique({
@@ -57,17 +57,17 @@ export class AuthService {
       });
     }
 
-    if (!user || !await bcrypt.compare(password, user.passwordHash)) {
+    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { 
-      sub: user.id, 
-      email: user.email, 
+    const payload = {
+      sub: user.id,
+      email: user.email,
       phoneNumber: user.phoneNumber,
-      roles: user.roles.map(role => role.role),
+      roles: user.roles.map((role) => role.role),
     };
-    
+
     // Update last login
     await this.prisma.user.update({
       where: { id: user.id },
@@ -81,7 +81,7 @@ export class AuthService {
         email: user.email,
         phoneNumber: user.phoneNumber,
         fullName: user.fullName,
-        roles: user.roles.map(role => role.role),
+        roles: user.roles.map((role) => role.role),
       },
     };
   }
@@ -92,10 +92,7 @@ export class AuthService {
     // Check if user already exists
     const existingUser = await this.prisma.user.findFirst({
       where: {
-        OR: [
-          { email },
-          { phoneNumber },
-        ],
+        OR: [{ email }, { phoneNumber }],
       },
     });
 
@@ -125,9 +122,9 @@ export class AuthService {
       },
     });
 
-    const payload = { 
-      sub: user.id, 
-      email: user.email, 
+    const payload = {
+      sub: user.id,
+      email: user.email,
       phoneNumber: user.phoneNumber,
       roles: ['CUSTOMER'],
     };
@@ -146,7 +143,7 @@ export class AuthService {
 
   async validateCredential(validateCredentialDto: ValidateCredentialDto) {
     const { email, password } = validateCredentialDto;
-    
+
     const user = await this.prisma.user.findUnique({
       where: { email },
       include: {
@@ -156,7 +153,7 @@ export class AuthService {
       },
     });
 
-    if (!user || !await bcrypt.compare(password, user.passwordHash)) {
+    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
       return null;
     }
 
@@ -165,7 +162,7 @@ export class AuthService {
       userName: user.fullName,
       email: user.email,
       avatar: null, // Add avatar support later if needed
-      roles: user.roles.map(role => role.role),
+      roles: user.roles.map((role) => role.role),
     };
   }
 

@@ -1,4 +1,11 @@
-import { Controller, Post, Body, UseGuards, Request, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Get,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto, ValidateCredentialDto } from './dto/auth.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -19,7 +26,9 @@ export class AuthController {
   }
 
   @Post('validate-credential')
-  async validateCredential(@Body() validateCredentialDto: ValidateCredentialDto) {
+  async validateCredential(
+    @Body() validateCredentialDto: ValidateCredentialDto,
+  ) {
     return this.authService.validateCredential(validateCredentialDto);
   }
 
