@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma.service';
@@ -12,8 +16,8 @@ export class UsersService {
     const { roles, passwordHash, ...userData } = createUserDto;
 
     // Hash password if it's not already hashed
-    const hashedPassword = passwordHash.startsWith('$2') 
-      ? passwordHash 
+    const hashedPassword = passwordHash.startsWith('$2')
+      ? passwordHash
       : await bcrypt.hash(passwordHash, 10);
 
     // Check if user exists
@@ -27,7 +31,9 @@ export class UsersService {
     });
 
     if (existingUser) {
-      throw new BadRequestException('User with this email or phone number already exists');
+      throw new BadRequestException(
+        'User with this email or phone number already exists',
+      );
     }
 
     return this.prisma.user.create({
@@ -35,15 +41,17 @@ export class UsersService {
         ...userData,
         passwordHash: hashedPassword,
         roles: {
-          create: roles?.map(role => ({
+          create: roles?.map((role) => ({
             role: role.role as any,
             isActive: role.isActive ?? true,
             isPrimary: role.isPrimary ?? false,
-          })) || [{
-            role: 'CUSTOMER' as any,
-            isActive: true,
-            isPrimary: true,
-          }]
+          })) || [
+            {
+              role: 'CUSTOMER' as any,
+              isActive: true,
+              isPrimary: true,
+            },
+          ],
         },
       },
       include: {
@@ -60,6 +68,8 @@ export class UsersService {
     search?: string;
     role?: string;
     status?: 'active' | 'inactive';
+    sort?: string;
+    order?: 'asc' | 'desc';
   }) {
     const page = params?.page || 1;
     const pageSize = Math.min(params?.pageSize || 10, 100);
@@ -74,7 +84,7 @@ export class UsersService {
           { fullName: { contains: params.search, mode: 'insensitive' } },
           { email: { contains: params.search, mode: 'insensitive' } },
           { phoneNumber: { contains: params.search } },
-        ]
+        ],
       });
     }
 
@@ -92,12 +102,53 @@ export class UsersService {
           some: {
             role: params.role as any,
             isActive: true,
-          }
-        }
+          },
+        },
       });
     }
 
     const where = whereConditions.length > 0 ? { AND: whereConditions } : {};
+
+    // Build dynamic sorting
+    let orderBy: any = { createdAt: 'desc' }; // Default sorting
+
+    if (params?.sort && params?.order) {
+      const sortField = params.sort;
+      const sortOrder = params.order;
+
+      switch (sortField) {
+        case 'fullName':
+          orderBy = { fullName: sortOrder };
+          break;
+        case 'email':
+          orderBy = { email: sortOrder };
+          break;
+        case 'phoneNumber':
+          orderBy = { phoneNumber: sortOrder };
+          break;
+        case 'isActive':
+          orderBy = { isActive: sortOrder };
+          break;
+        case 'lastLoginAt':
+          orderBy = { lastLoginAt: sortOrder };
+          break;
+        case 'createdAt':
+          orderBy = { createdAt: sortOrder };
+          break;
+        // For roles sorting, we'll need to handle it differently since it's a relation
+        case 'roles':
+          // Sort by the primary role
+          orderBy = {
+            roles: {
+              _count: sortOrder,
+            },
+          };
+          break;
+        default:
+          // If sort field is not recognized, use default
+          orderBy = { createdAt: 'desc' };
+      }
+    }
 
     const [users, total] = await Promise.all([
       this.prisma.user.findMany({
@@ -107,7 +158,7 @@ export class UsersService {
             where: { isActive: true },
           },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy,
         skip,
         take: pageSize,
       }),
@@ -117,7 +168,7 @@ export class UsersService {
     ]);
 
     return {
-      users: users.map(user => ({
+      users: users.map((user) => ({
         ...user,
         passwordHash: undefined, // Don't return password hash
       })),
@@ -166,8 +217,10 @@ export class UsersService {
     }
 
     // Hash password if provided and not already hashed
-    const hashedPassword = passwordHash 
-      ? (passwordHash.startsWith('$2') ? passwordHash : await bcrypt.hash(passwordHash, 10))
+    const hashedPassword = passwordHash
+      ? passwordHash.startsWith('$2')
+        ? passwordHash
+        : await bcrypt.hash(passwordHash, 10)
       : undefined;
 
     // Update user
@@ -253,7 +306,7 @@ export class UsersService {
     // If setting as primary, remove primary flag from other roles
     if (isPrimary) {
       await this.prisma.userRoleAssignment.updateMany({
-        where: { 
+        where: {
           userId,
           isPrimary: true,
         },
