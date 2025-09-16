@@ -222,7 +222,14 @@
             "otpVerification": "تحقق من الكود المرسل",
             "otpVerificationSimple": "بسيط",
             "otpVerificationSide": "جانبي",
-            "otpVerificationSplit": "مقسم"
+            "otpVerificationSplit": "مقسم",
+            "welcomeBack": "مرحباً بعودتك!",
+            "enterCredentials": "يرجى إدخال بيانات الاعتماد الخاصة بك لتسجيل الدخول!",
+            "email": "البريد الإلكتروني",
+            "password": "كلمة المرور",
+            "dontHaveAccount": "ليس لديك حساب حتى الآن؟",
+            "continueWith": "أو المتابعة مع",
+            "signingIn": "جاري تسجيل الدخول..."
         },
         "guide": {
             "guide": "الدليل",

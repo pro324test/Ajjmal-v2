@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button'
 import { FormItem, Form } from '@/components/ui/Form'
 import PasswordInput from '@/components/shared/PasswordInput'
 import classNames from '@/utils/classNames'
+import { useTranslation } from '@/utils/hooks/useTranslation'
 
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -33,19 +34,20 @@ type SignInFormSchema = {
     password: string
 }
 
-const validationSchema: ZodType<SignInFormSchema> = z.object({
-    email: z
-        .string({ required_error: 'Please enter your email' })
-        .min(1, { message: 'Please enter your email' }),
-    password: z
-        .string({ required_error: 'Please enter your password' })
-        .min(1, { message: 'Please enter your password' }),
-})
-
 const SignInForm = (props: SignInFormProps) => {
     const [isSubmitting, setSubmitting] = useState<boolean>(false)
+    const t = useTranslation()
 
     const { className, setMessage, onSignIn, passwordHint } = props
+
+    const validationSchema: ZodType<SignInFormSchema> = z.object({
+        email: z
+            .string({ required_error: 'Please enter your email' })
+            .min(1, { message: 'Please enter your email' }),
+        password: z
+            .string({ required_error: 'Please enter your password' })
+            .min(1, { message: 'Please enter your password' }),
+    })
 
     const {
         handleSubmit,
@@ -69,7 +71,7 @@ const SignInForm = (props: SignInFormProps) => {
         <div className={className}>
             <Form onSubmit={handleSubmit(handleSignIn)}>
                 <FormItem
-                    label="Email"
+                    label={t('authentication.email')}
                     invalid={Boolean(errors.email)}
                     errorMessage={errors.email?.message}
                 >
@@ -79,7 +81,7 @@ const SignInForm = (props: SignInFormProps) => {
                         render={({ field }) => (
                             <Input
                                 type="email"
-                                placeholder="Email"
+                                placeholder={t('authentication.email')}
                                 autoComplete="off"
                                 {...field}
                             />
@@ -87,7 +89,7 @@ const SignInForm = (props: SignInFormProps) => {
                     />
                 </FormItem>
                 <FormItem
-                    label="Password"
+                    label={t('authentication.password')}
                     invalid={Boolean(errors.password)}
                     errorMessage={errors.password?.message}
                     className={classNames(
@@ -102,7 +104,7 @@ const SignInForm = (props: SignInFormProps) => {
                         render={({ field }) => (
                             <PasswordInput
                                 type="text"
-                                placeholder="Password"
+                                placeholder={t('authentication.password')}
                                 autoComplete="off"
                                 {...field}
                             />
@@ -116,7 +118,7 @@ const SignInForm = (props: SignInFormProps) => {
                     variant="solid"
                     type="submit"
                 >
-                    {isSubmitting ? 'Signing in...' : 'Sign In'}
+                    {isSubmitting ? t('authentication.signingIn') : t('authentication.signIn')}
                 </Button>
             </Form>
         </div>

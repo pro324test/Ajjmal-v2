@@ -222,7 +222,14 @@
             "otpVerification": "Otp Verification",
             "otpVerificationSimple": "Simple",
             "otpVerificationSide": "Side",
-            "otpVerificationSplit": "Split"
+            "otpVerificationSplit": "Split",
+            "welcomeBack": "Welcome back!",
+            "enterCredentials": "Please enter your credentials to sign in!",
+            "email": "Email",
+            "password": "Password",
+            "dontHaveAccount": "Don't have an account yet?",
+            "continueWith": "or continue with",
+            "signingIn": "Signing in..."
         },
         "guide": {
             "guide": "Guide",
