@@ -1,8 +1,12 @@
 'use client'
 
 import Header from '@/components/template/Header'
+import SidePanel from '@/components/template/SidePanel'
 import UserProfileDropdown from '@/components//template/UserProfileDropdown'
+import LanguageSelector from '@/components/template/LanguageSelector'
+import Notification from '@/components/template/Notification'
 import HeaderLogo from '@/components/template/HeaderLogo'
+import Search from '@/components/template/Search'
 import MobileNav from '@/components/template/MobileNav'
 import HorizontalNav from '@/components/template/HorizontalNav'
 import LayoutBase from '@/components//template/LayoutBase'
@@ -110,6 +114,10 @@ const ContentOverlay = ({ children }: CommonProps) => {
                         headerMiddle={<HorizontalNav />}
                         headerEnd={
                             <>
+                                <Search />
+                                <LanguageSelector />
+                                <Notification />
+                                <SidePanel />
                                 <UserProfileDropdown hoverable={false} />
                             </>
                         }
