@@ -120,9 +120,24 @@ $ npx prisma generate
 # Run database migrations
 $ npx prisma migrate dev
 
+# Seed the database with test users
+$ npm run seed
+
 # View database in Prisma Studio (optional)
 $ npx prisma studio
 ```
+
+## Test Users for Login
+
+After seeding, you can use these credentials to test login functionality:
+
+- **Email:** `admin-01@ecme.com` / **Password:** `123Qwe` (Customer - matches frontend demo)
+- **Email:** `admin@ecme.com` / **Password:** `123Qwe` (System Admin)
+- **Email:** `vendor@ecme.com` / **Password:** `123Qwe` (Vendor)
+- **Email:** `delivery@ecme.com` / **Password:** `123Qwe` (Delivery Person)
+- **Email:** `multi@ecme.com` / **Password:** `123Qwe` (Customer + Vendor)
+
+See [SEEDING.md](./SEEDING.md) for complete details.
 
 ## Compile and run the project
 
