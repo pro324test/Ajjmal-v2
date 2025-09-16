@@ -17,7 +17,8 @@ const validateCredential = async (values: SignInCredential) => {
         }
 
         // Return user data without password
-        const { password: _, ...userWithoutPassword } = user
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password: userPassword, ...userWithoutPassword } = user
         return userWithoutPassword
     } catch (error) {
         console.error('Authentication error:', error)
