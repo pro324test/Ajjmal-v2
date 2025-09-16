@@ -1,4 +1,12 @@
-import { IsEmail, IsString, IsOptional, IsPhoneNumber, IsBoolean, IsArray, ValidateNested } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  IsOptional,
+  IsPhoneNumber,
+  IsBoolean,
+  IsArray,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 class UserRoleDto {

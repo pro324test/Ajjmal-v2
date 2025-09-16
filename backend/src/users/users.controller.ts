@@ -31,7 +31,9 @@ export class UsersController {
     @Query('pageSize', ParseIntPipe) pageSize?: number,
     @Query('search') search?: string,
     @Query('role') role?: string,
-    @Query('status') status?: 'active' | 'inactive'
+    @Query('status') status?: 'active' | 'inactive',
+    @Query('sort') sort?: string,
+    @Query('order') order?: 'asc' | 'desc',
   ) {
     return this.usersService.findAll({
       page,
@@ -39,6 +41,8 @@ export class UsersController {
       search,
       role,
       status,
+      sort,
+      order,
     });
   }
 
@@ -49,8 +53,8 @@ export class UsersController {
 
   @Patch(':id')
   update(
-    @Param('id', ParseIntPipe) id: number, 
-    @Body() updateUserDto: UpdateUserDto
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.usersService.update(id, updateUserDto);
   }
@@ -64,7 +68,7 @@ export class UsersController {
   assignRole(
     @Param('id', ParseIntPipe) id: number,
     @Param('role') role: string,
-    @Body('isPrimary') isPrimary?: boolean
+    @Body('isPrimary') isPrimary?: boolean,
   ) {
     return this.usersService.assignRole(id, role, isPrimary);
   }
@@ -72,7 +76,7 @@ export class UsersController {
   @Delete(':id/roles/:role')
   removeRole(
     @Param('id', ParseIntPipe) id: number,
-    @Param('role') role: string
+    @Param('role') role: string,
   ) {
     return this.usersService.removeRole(id, role);
   }
