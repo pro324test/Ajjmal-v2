@@ -2,6 +2,7 @@ import Container from '@/components/shared/Container'
 import UsersAction from './_components/UsersAction'
 import UsersTable from './_components/UsersTable'
 import UsersProvider from './_components/UsersProvider'
+import UserDialog from './_components/UserDialog'
 import getUsers from '@/server/actions/users/getUsers'
 import type { PageProps } from '@/@types/common'
 
@@ -52,6 +53,9 @@ export default async function UsersPage({ searchParams }: PageProps) {
                     />
                 </div>
             </Container>
+            
+            {/* Dialog Components */}
+            <UserDialog />
         </UsersProvider>
     )
 }
