@@ -1,12 +1,13 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import Avatar from '@/components/ui/Avatar'
 import Tag from '@/components/ui/Tag'
 import Dropdown from '@/components/ui/Dropdown'
 import DataTable from '@/components/shared/DataTable'
 import { useUsersStore } from '../_store/usersStore'
 import useAppendQueryParams from '@/utils/hooks/useAppendQueryParams'
+import DeleteConfirmDialog from './DeleteConfirmDialog'
 import dayjs from 'dayjs'
 import { TbDots } from 'react-icons/tb'
 import { USER_ROLE_LABELS, USER_STATUS_LABELS } from '../constants'
@@ -75,15 +76,27 @@ const UsersTable = (props: UsersTableProps) => {
         }
     }
 
+    const [deleteDialogUser, setDeleteDialogUser] = useState<User | null>(null)
+
     const handleEdit = (user: User) => {
         setUserDialog({ type: 'edit', open: true })
-        // You would set the user to edit here
-        console.log('Edit user:', user.id)
+        // Set the user to edit using the global function
+        if (typeof window !== 'undefined' && (window as any).setUserToEdit) {
+            (window as any).setUserToEdit(user)
+        }
     }
 
     const handleDelete = (user: User) => {
-        // Handle delete logic
-        console.log('Delete user:', user.id)
+        setDeleteDialogUser(user)
+    }
+
+    const handleDeleteDialogClose = () => {
+        setDeleteDialogUser(null)
+    }
+
+    const handleUserDeleted = () => {
+        // Trigger refresh of user list
+        window.location.reload()
     }
 
     const columns: ColumnDef<User>[] = useMemo(
@@ -211,22 +224,31 @@ const UsersTable = (props: UsersTableProps) => {
     )
 
     return (
-        <DataTable
-            selectable
-            columns={columns}
-            data={userList}
-            loading={initialLoading}
-            pagingData={{
-                total: userListTotal,
-                pageIndex,
-                pageSize,
-            }}
-            onPaginationChange={handlePaginationChange}
-            onSelectChange={handleSelectChange}
-            onSort={handleSort}
-            onCheckBoxChange={handleRowSelect}
-            onIndeterminateCheckBoxChange={handleAllRowSelect}
-        />
+        <>
+            <DataTable
+                selectable
+                columns={columns}
+                data={userList}
+                loading={initialLoading}
+                pagingData={{
+                    total: userListTotal,
+                    pageIndex,
+                    pageSize,
+                }}
+                onPaginationChange={handlePaginationChange}
+                onSelectChange={handleSelectChange}
+                onSort={handleSort}
+                onCheckBoxChange={handleRowSelect}
+                onIndeterminateCheckBoxChange={handleAllRowSelect}
+            />
+            
+            <DeleteConfirmDialog
+                isOpen={!!deleteDialogUser}
+                onClose={handleDeleteDialogClose}
+                user={deleteDialogUser}
+                onDeleted={handleUserDeleted}
+            />
+        </>
     )
 }
 
