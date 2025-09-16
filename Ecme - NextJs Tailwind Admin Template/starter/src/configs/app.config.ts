@@ -11,7 +11,7 @@ const appConfig: AppConfig = {
     authenticatedEntryPath: '/home',
     unAuthenticatedEntryPath: '/sign-in',
     locale: 'en',
-    activeNavTranslation: false,
+    activeNavTranslation: true,
 }
 
 export default appConfig
