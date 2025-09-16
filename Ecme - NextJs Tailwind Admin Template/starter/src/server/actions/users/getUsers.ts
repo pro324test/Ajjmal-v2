@@ -17,6 +17,8 @@ const getUsers = async (filters?: Record<string, string>): Promise<GetUsersRespo
         if (filters?.search) params.append('search', filters.search)
         if (filters?.role) params.append('role', filters.role)
         if (filters?.status) params.append('status', filters.status)
+        if (filters?.sort) params.append('sort', filters.sort)
+        if (filters?.order) params.append('order', filters.order)
         
         const url = `${apiUrl}/users?${params.toString()}`
         
@@ -114,6 +116,52 @@ const getUsers = async (filters?: Record<string, string>): Promise<GetUsersRespo
         if (filters?.status) {
             const isActive = filters.status === 'active'
             filteredUsers = filteredUsers.filter(user => user.isActive === isActive)
+        }
+
+        // Apply sorting to mock data
+        if (filters?.sort && filters?.order) {
+            const sortKey = filters.sort
+            const sortOrder = filters.order
+            
+            filteredUsers.sort((a: any, b: any) => {
+                let aValue, bValue
+                
+                switch (sortKey) {
+                    case 'fullName':
+                        aValue = a.fullName?.toLowerCase() || ''
+                        bValue = b.fullName?.toLowerCase() || ''
+                        break
+                    case 'phoneNumber':
+                        aValue = a.phoneNumber || ''
+                        bValue = b.phoneNumber || ''
+                        break
+                    case 'email':
+                        aValue = a.email?.toLowerCase() || ''
+                        bValue = b.email?.toLowerCase() || ''
+                        break
+                    case 'isActive':
+                        aValue = a.isActive ? 1 : 0
+                        bValue = b.isActive ? 1 : 0
+                        break
+                    case 'lastLoginAt':
+                        aValue = a.lastLoginAt ? new Date(a.lastLoginAt).getTime() : 0
+                        bValue = b.lastLoginAt ? new Date(b.lastLoginAt).getTime() : 0
+                        break
+                    case 'roles':
+                        // Sort by primary role
+                        const aPrimaryRole = a.roles.find((r: any) => r.isPrimary)?.role || ''
+                        const bPrimaryRole = b.roles.find((r: any) => r.isPrimary)?.role || ''
+                        aValue = aPrimaryRole.toLowerCase()
+                        bValue = bPrimaryRole.toLowerCase()
+                        break
+                    default:
+                        return 0
+                }
+                
+                if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1
+                if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1
+                return 0
+            })
         }
 
         // Pagination for mock data

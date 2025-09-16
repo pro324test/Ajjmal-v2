@@ -26,6 +26,12 @@ export default async function UsersPage({ searchParams }: PageProps) {
     if (params.pageSize && typeof params.pageSize === 'string') {
         userListParams.pageSize = params.pageSize
     }
+    if (params.sort && typeof params.sort === 'string') {
+        userListParams.sort = params.sort
+    }
+    if (params.order && typeof params.order === 'string') {
+        userListParams.order = params.order
+    }
 
     const userList = await getUsers(userListParams)
 
