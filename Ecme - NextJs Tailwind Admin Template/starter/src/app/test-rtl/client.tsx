@@ -19,7 +19,7 @@ export default function RTLTestClient() {
                 const direction = locale === 'ar' ? THEME_ENUM.DIR_RTL : THEME_ENUM.DIR_LTR
                 setDirection(direction)
                 // Remove the locale parameter and refresh
-                const newUrl = new URL(window.location)
+                const newUrl = new URL(window.location.href)
                 newUrl.searchParams.delete('locale')
                 window.history.replaceState({}, '', newUrl.toString())
                 window.location.reload()

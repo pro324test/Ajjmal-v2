@@ -2,10 +2,14 @@
 
 import SideNav from '@/components/template/SideNav'
 import Header from '@/components/template/Header'
+import SidePanel from '@/components/template/SidePanel'
 import FrameLessGap from '@/components/template/FrameLessGap'
 import MobileNav from '@/components/template/MobileNav'
 import SideNavToggle from '@/components/template/SideNavToggle'
 import UserProfileDropdown from '@/components//template/UserProfileDropdown'
+import LanguageSelector from '@/components/template/LanguageSelector'
+import Notification from '@/components/template/Notification'
+import Search from '@/components/template/Search'
 import LayoutBase from '@/components//template/LayoutBase'
 import classNames from '@/utils/classNames'
 import useScrollTop from '@/utils/hooks/useScrollTop'
@@ -95,6 +99,10 @@ const FrameLessSide = ({ children }: CommonProps) => {
                             }
                             headerEnd={
                                 <>
+                                    <Search />
+                                    <LanguageSelector />
+                                    <Notification />
+                                    <SidePanel />
                                     <UserProfileDropdown hoverable={false} />
                                 </>
                             }

@@ -1,10 +1,9 @@
-import { getLocale, getMessages } from 'next-intl/server'
+import { getLocale } from 'next-intl/server'
 import { getTheme } from '@/server/actions/theme'
 import RTLTestClient from './client'
 
 export default async function TestRTLPage() {
     const locale = await getLocale()
-    const messages = await getMessages()
     const theme = await getTheme()
 
     // This is a simple test page to demonstrate RTL functionality

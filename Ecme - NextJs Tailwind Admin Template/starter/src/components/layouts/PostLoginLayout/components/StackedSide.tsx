@@ -2,8 +2,12 @@
 
 import StackedSideNav from '@/components/template/StackedSideNav'
 import Header from '@/components/template/Header'
+import SidePanel from '@/components/template/SidePanel'
 import MobileNav from '@/components/template/MobileNav'
 import UserProfileDropdown from '@/components//template/UserProfileDropdown'
+import LanguageSelector from '@/components/template/LanguageSelector'
+import Notification from '@/components/template/Notification'
+import Search from '@/components/template/Search'
 import LayoutBase from '@/components//template/LayoutBase'
 import { LAYOUT_STACKED_SIDE } from '@/constants/theme.constant'
 import type { CommonProps } from '@/@types/common'
@@ -22,6 +26,10 @@ const StackedSide = ({ children }: CommonProps) => {
                         headerStart={<MobileNav />}
                         headerEnd={
                             <>
+                                <Search />
+                                <LanguageSelector />
+                                <Notification />
+                                <SidePanel />
                                 <UserProfileDropdown hoverable={false} />
                             </>
                         }
